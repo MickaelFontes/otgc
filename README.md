@@ -2,17 +2,17 @@
 
 Project to automate the update of a Google Calendar schedule based on a [OnBoard](https://onboard.ec-nantes.fr) schedule.
 
-## First approach: Using [Selenium](https://www.selenium.dev/)
+## First approach: Manual requests
 
-The OnBoard schedule is downloaded using Selenium and then imported into Google Calendar using [Google Calendar Simple API](https://github.com/kuzmoyev/google-calendar-simple-api).
+Since Onboard has no public API and uses `javax.faces.ViewSate` which gives each loaded page a unique number impossible to predict, we'll get the scheduele doing manual HTTP GET/POST requests as if were clicking on the webpage with our mouse.
 
 **WARNING:**  
 In this project, we suppose that an entire calendar of your Google Calendar is dedicaded to your OnBoard schedule. This way, any error or mishandling won't have any impact on your personnal calendar. In the worst case scenario, you simply have to import a new ICS from OnBoard to correct everything.
 *Please* ensure that's the case. This tool is provided "as is" and I won't be responsible for any error or problem you may encounter using it.
 
-## Second approach: Manual requests
+## Second approach: Using [Selenium](https://www.selenium.dev/)
 
-Since Onboard has no public API and uses `javax.faces.ViewSate` which gives each loaded page a unique number impossible to predict, we'll get the scheduele doing manual HTTP GET/POST requests as if were clicking on the webpage with our mouse.
+The OnBoard schedule is downloaded using Selenium and then imported into Google Calendar using [Google Calendar Simple API](https://github.com/kuzmoyev/google-calendar-simple-api).
 
 # Installation
 
