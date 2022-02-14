@@ -26,14 +26,14 @@ You need to configure a few things:
 
 ## Add your OnBoard credientials
 
-To download your schedule, your credentials are needed to connect onto OnBoard.
-Please write them in a simple text file in the ``Credentials`` folder and edit the path in the `config.ini` file.
+To download your schedule, your credentials are needed to connect onto OnBoard.  
+Please write them in a simple text file in the ``Credentials`` folder and edit the path in the `config.ini` file.  
 The first line of the file must be the username and the second line the password.
 
 ## Google Calendar Authentification
 
-To connect to Google Calendar, I used [Google Calendar Simple API](https://github.com/kuzmoyev/google-calendar-simple-api), a Python package to simply use the Google Calendar API in Python.
-You will need to get your API credentials and refer to them in the `config.ini` file. Please follow the documentation [here](https://google-calendar-simple-api.readthedocs.io/en/latest/getting_started.html) and once you have your `credentials.json`, add a path to it in `config.ini` (as the `config['GOOGLE_CALENDAR']['JSON_CREDENTIALS_PATH ']` variable).
+To connect to Google Calendar, I used [Google Calendar Simple API](https://github.com/kuzmoyev/google-calendar-simple-api), a Python package to simply use the Google Calendar API in Python.  
+You will need to get your API credentials and refer to them in the `config.ini` file. Please follow the documentation [here](https://google-calendar-simple-api.readthedocs.io/en/latest/getting_started.html) and once you have your `credentials.json`, add a path to it in `config.ini` (as the `config['GOOGLE_CALENDAR']['JSON_CREDENTIALS_PATH ']` variable).  
 You will also need to add your calendar ID in teh configuration file (as the `config['GOOGLE_CALENDAR']['CALENDAR_ID']` variable).
 
 ## Selenium (Optional)
@@ -44,7 +44,7 @@ If you need to use the other approach based on selenium, first install the Selen
 pip install selenium    
 ```
 
-Then, update the `config['SELENIUM']['GECKO_PATH']` variable to point to your gecko driver (or your other WebDriver if you choose another one).
+Then, update the `config['SELENIUM']['GECKO_PATH']` variable to point to your gecko driver (or your other WebDriver if you choose another one).  
 Now, everything should be fine. If you have any issue, please read the documentation [here](https://selenium-python.readthedocs.io/installation.html).
 
 # Usage
