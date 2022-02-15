@@ -86,5 +86,5 @@ def main(manual=True):
 if __name__ == '__main__':
     from time import time
     start = time()
-    main(manual=False)
+    main(manual=True)
     print(time() - start)
