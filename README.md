@@ -36,6 +36,8 @@ To connect to Google Calendar, I used [Google Calendar Simple API](https://githu
 You will need to get your API credentials and refer to them in the `config.ini` file. Please follow the documentation [here](https://google-calendar-simple-api.readthedocs.io/en/latest/getting_started.html) and once you have your `credentials.json`, add a path to it in `config.ini` (as the `config['GOOGLE_CALENDAR']['JSON_CREDENTIALS_PATH ']` variable).  
 You will also need to add your calendar ID in teh configuration file (as the `config['GOOGLE_CALENDAR']['CALENDAR_ID']` variable).
 
+**NB:** To create or renew the token with the JSON, you will need to manually log in your Google account. It's a problem if you want to automate the task and I don't know how to avoid that. I may have missed something. Any help is welcome :)
+
 ## Selenium (Optional)
 
 If you need to use the other approach based on selenium, first install the Selenium Python module:
