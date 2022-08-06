@@ -93,7 +93,7 @@ def main(manual=True):
 
     print(len(all_events), 'events imported.')
 
-def  helloWorld():
+def  helloWorld(x):
     """Function called by Cloud Function"""
     from time import time
     start = time()
