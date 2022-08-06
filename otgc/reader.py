@@ -1,5 +1,6 @@
 import re
 from datetime import datetime
+from sysconfig import is_python_build
 
 from gcsa.event import Event
 
@@ -58,21 +59,25 @@ class ReaderICS:
     ]
     sep_fields = re.compile('|'.join(SEPARATORS_FIELDS))
 
-    def __init__(self, file_path):
-        self.file_path = file_path
+    def __init__(self, calendar, is_path=False):
+        self.calendar = calendar
+        self.is_path = is_path
 
     def __str__(self):
-        return 'ReaderICS used for file at this path: ' + self.file_path
+        return 'ReaderICS used for a ICS'
 
     def read(self):
-        '''Extract a list of EventICS from the ICS file at the provided path.'''
-        with open(self.file_path, 'r') as file:
-            ics_text = file.read()
-            ics_text = ReaderICS.sep.split(ics_text)
-            ics_text = [
-                ReaderICS.sep_fields.split(text)[1:] for text in ics_text
-                if text.startswith("\nDTSTART:")
-            ]
+        '''Extract a list of EventICS from the ICS provided.'''
+        if (self.is_path):
+            with open(self.calendar, 'r') as file:
+                ics_text = file.read()
+        else:
+            ics_text = self.calendar
+        ics_text = ReaderICS.sep.split(ics_text)
+        ics_text = [
+            ReaderICS.sep_fields.split(text)[1:] for text in ics_text
+            if text.startswith("\nDTSTART:")
+        ]
         ics_events = [
             EventICS(t_begin=text[0],
                      t_end=text[1],

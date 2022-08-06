@@ -67,19 +67,14 @@ def main(manual=True):
     # Step 3: Read all ICS files, get all unique events
     all_events = []
     viewed_events = set()
-    file_names = ['planning.ics']
-    if nb_months > 1:
-        file_names += [
-            'planning(' + str(i) + ').ics' for i in range(1, nb_months)
-        ]
 
-    for file in file_names:
-        reader = ReaderICS(directory + '/' + file)
-        current_events = reader.read()
-        all_events += [
-            event for event in current_events if event.uid not in viewed_events
-        ]
-        viewed_events.update([e.uid for e in current_events])
+
+    reader = ReaderICS(essai_get_post.last_request.text)
+    current_events = reader.read()
+    all_events += [
+        event for event in current_events if event.uid not in viewed_events
+    ]
+    viewed_events.update([e.uid for e in current_events])
     # Step 4: Setup connection to Google Calendar, clean and import
     ## I know it's a bit "bourrin", feel free to propose your own method
     calendar_ecn = GoogleCalendar(calendar=calendar_id,
