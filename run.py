@@ -1,6 +1,7 @@
 import os
 
 from gcsa.google_calendar import GoogleCalendar
+from google.oauth2.credentials import Credentials
 
 from otgc.reader import ReaderICS
 from otgc.manual import Onboard
@@ -15,6 +16,16 @@ def main(manual=True):
     calendar_id = config['GOOGLE_CALENDAR']['CALENDAR_ID']
     token_path = config['GOOGLE_CALENDAR']['TOKEN_PATH']
     credentials_path = config['GOOGLE_CALENDAR']['JSON_CREDENTIALS_PATH']
+
+
+    token = Credentials(
+        token=None,
+        refresh_token=config['OAUTH']['REFRESH_TOKEN'],
+        client_id=config['OAUTH']['CLIENT_ID'],
+        client_secret=config['OAUTH']['CLIENT_SECRET'],
+        scopes=[config['OAUTH']['SCOPE']],
+        token_uri=config['OAUTH']['TOKEN_URI']
+    )
     
     if not os.path.exists(directory):
         os.makedirs(directory)
@@ -73,7 +84,7 @@ def main(manual=True):
     ## I know it's a bit "bourrin", feel free to propose your own method
     calendar_ecn = GoogleCalendar(calendar=calendar_id,
                                   token_path=token_path,
-                                  credentials_path=credentials_path)
+                                  credentials=token)
 
     for event in calendar_ecn:
         calendar_ecn.delete_event(event)
@@ -82,7 +93,13 @@ def main(manual=True):
 
     print(len(all_events), 'events imported.')
 
-
+def  helloWorld():
+    """Function called by Cloud Function"""
+    from time import time
+    start = time()
+    main(manual=True)
+    print(time() - start)
+    
 if __name__ == '__main__':
     from time import time
     start = time()
