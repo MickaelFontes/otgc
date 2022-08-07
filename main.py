@@ -27,10 +27,10 @@ def main(manual=True):
         token_uri=config['OAUTH']['TOKEN_URI']
     )
     
-    if not os.path.exists(directory):
-        os.makedirs(directory)
-    for file in os.listdir(directory):
-        os.remove(os.path.join(directory, file))
+    # if not os.path.exists(directory):
+    #     os.makedirs(directory)
+    # for file in os.listdir(directory):
+    #     os.remove(os.path.join(directory, file))
 
     if not manual:
         from otgc.selenium import GetOnboard
@@ -60,9 +60,9 @@ def main(manual=True):
         essai_get_post.post_planning_year()
         essai_get_post.post_download()
 
-        with open(config['RUN']['DOWNLOADS_FOLDER']+'/planning.ics', 'w') as file:
-            file.write(essai_get_post.last_request.text)
-        print('Calendar downloaded.')
+        # with open(config['RUN']['DOWNLOADS_FOLDER']+'/planning.ics', 'w') as file:
+        #     file.write(essai_get_post.last_request.text)
+        # print('Calendar downloaded.')
 
     # Step 3: Read all ICS files, get all unique events
     all_events = []
