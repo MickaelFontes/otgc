@@ -5,14 +5,15 @@ locals {
 # Compress source code
 data "archive_file" "source" {
   type        = "zip"
-  source_dir  = "../../"
+  source_dir  = "../"
   output_path = "/tmp/function-${local.timestamp}.zip"
-  excludes    = [ "../../terraform" ]
+  excludes    = [ "../terraform" ]
 }
 
 # Create bucket that will host the source code
 resource "google_storage_bucket" "bucket" {
-  name = "${var.project}-function"
+  name       = "${var.project}-function"
+  location   = "EU"
 }
 
 # Add source code zip to bucket
