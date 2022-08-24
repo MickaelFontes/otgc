@@ -9,7 +9,7 @@ terraform {
 	}
   }
   backend "gcs" {
-   bucket  = var.state_bucket
+   bucket  = "edt-onboard-tfstate"
    prefix  = "terraform/state"
   }
 }

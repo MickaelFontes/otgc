@@ -1,5 +1,6 @@
-from cmath import exp
 import os
+from time import time
+import configparser
 
 from gcsa.google_calendar import GoogleCalendar
 from google.oauth2.credentials import Credentials
@@ -7,18 +8,20 @@ from google.oauth2.credentials import Credentials
 from otgc.reader import ReaderICS
 from otgc.manual import Onboard
 
-import configparser
 
 config = configparser.ConfigParser()
 config.read("config.ini")
 
 
-def main(manual=True, export=False):
+def main(
+    manual=True, export=False, username=None, password=None, credentials_file=False
+):
     """Process to update your Google Calendar from OnBoard"""
     directory = config["RUN"]["DOWNLOADS_FOLDER"]
     calendar_id = config["GOOGLE_CALENDAR"]["CALENDAR_ID"]
     token_path = config["GOOGLE_CALENDAR"]["TOKEN_PATH"]
-    credentials_path = config["GOOGLE_CALENDAR"]["JSON_CREDENTIALS_PATH"]
+    if credentials_file:
+        credentials_path = config["GOOGLE_CALENDAR"]["JSON_CREDENTIALS_PATH"]
 
     token = Credentials(
         token=None,
@@ -50,12 +53,12 @@ def main(manual=True, export=False):
         onboard_planning.get_ics()
 
     else:
-        nb_months = 1
         # Manual process GET/POST
-        with open(config["ONBOARD"]["CREDENTIALS_PATH"], "r") as file:
-            lines = file.readlines()
-            username = lines[0].rstrip()
-            password = lines[1].rstrip()
+        if credentials_file:  # OnBoard credentials are stored as clear text in a file
+            with open(credentials_path, "r", encoding="UTF-8") as file:
+                lines = file.readlines()
+                username = lines[0].rstrip()
+                password = lines[1].rstrip()
         essai_get_post = Onboard(username, password)
         essai_get_post.post_login()
         essai_get_post.get_main()
@@ -66,7 +69,7 @@ def main(manual=True, export=False):
         essai_get_post.post_download()
 
         if export:
-            with open(config["RUN"]["DOWNLOADS_FOLDER"] + "/planning.ics", "w") as file:
+            with open(directory + "/planning.ics", "w", encoding="UTF-8") as file:
                 file.write(essai_get_post.last_request.text)
             print("ICS Calendar exported.")
 
@@ -92,19 +95,32 @@ def main(manual=True, export=False):
     print(len(all_events), "events imported.")
 
 
-def helloWorld(x):
-    """Function called by Cloud Function"""
-    from time import time
+def helloWorld(request):
+    """Function called by the Cloud Function
 
+    Args:
+        request (flask.Request): request that triggered the Cloud Function
+
+    Returns:
+        string: Execution status at the end
+    """
+
+    request_args = request.get_json()
+    print(request_args.keys())
+    if request_args and "username" in request_args and "password" in request_args:
+        print("Arguments valid")
+        username = request_args["username"]
+        password = request_args["password"]
+        print("User: ", username)
+    else:
+        return "Arguments not valid"
     start = time()
-    main(manual=True)
+    main(manual=True, username=username, password=password)
     print(time() - start)
     return "Calendar update complete"
 
 
 if __name__ == "__main__":
-    from time import time
-
-    start = time()
+    start_main = time()
     main(manual=True)
-    print(time() - start)
+    print(time() - start_main)
