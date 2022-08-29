@@ -1,6 +1,5 @@
 import re
 from datetime import datetime
-from sysconfig import is_python_build
 
 from gcsa.event import Event
 

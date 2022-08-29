@@ -1,7 +1,8 @@
 import re
 from datetime import date, datetime, timedelta
-
 from requests import Session
+
+from exceptions import OnBoardError, OnBoardAuthentification, OnBoardMenuError
 
 
 class Onboard:
@@ -41,7 +42,7 @@ class Onboard:
         The ViewState is needed to perform other requests to OnBoard.
         """
         regex_view_state = re.search(
-            r'id="j_id1:javax.faces.ViewState:0" value="([0-9-:]*)" autocomplete="off"',
+            r'id="j_id1:javax.faces.ViewState:0" value="([0-9-:]+)" autocomplete="off"',
             self.last_request.text,
         )
         if regex_view_state:
@@ -57,22 +58,60 @@ class Onboard:
         # Matches the first element (see '_0'), it should be the My Schedule
         # May change with major updates with the menus
         regex_menu_id = re.search(
-            r"form:sidebar_menuid':'([0-9]*_0)'", self.last_request.text
+            r"form:sidebar_menuid':'([0-9_]{3})'.+(Mon\splanning|My\sschedule)",
+            self.last_request.text,
         )
         if regex_menu_id:
             menu_id = regex_menu_id.group(1)
+        else:
+            raise OnBoardMenuError("The 'My schedule' menu button was not found.")
         return menu_id
 
     def is_auth(self):
+        """Check the response to verify if the user is suathentificated
+
+        Returns:
+            boolean: True if authentificated, else False
+        """
         get_title = re.search(
-            r"\<title\>([a-zA-Z \']*)\s*\<\/title>", self.last_request.text
+            r"\<title\>([a-zA-Z \']+)\s+\<\/title>", self.last_request.text
         )
         if get_title:
             title = get_title.group(1)
             if title.lower() in ["page d'accueil", "home page"]:
                 return True
+        return False
+
+    def planning_is_loaded(self):
+        """Check after the GET request if the response page is the Planning page.
+
+        Returns:
+            boolean: True is correct page loaded, else False.
+        """
+        get_planning_div = re.search(
+            r'<div class="planning Card">', self.last_request.text
+        )
+        if get_planning_div:
+            return True
+        return False
+
+    def is_ics(self):
+        """Check if the response to the POST download request is an ICS file.
+
+        Returns:
+            boolean: True if it is an ICS, else False.
+        """
+        ics_beginning_end = re.search(
+            r"BEGIN:VCALENDAR[\s\S]+END:VCALENDAR", self.last_request.text
+        )
+        return ics_beginning_end
 
     def post_login(self):
+        """POST request to authentificate
+
+        Raises:
+            OnBoardAuthentification: If the authentification failed.
+        """
         data_post = {
             "username": self.username,
             "password": self.password,
@@ -98,13 +137,21 @@ class Onboard:
         # Check if authentification was successful
         if self.is_auth():
             print("Authentification successful")
+        else:
+            print("Authentification failed")
+            raise OnBoardAuthentification(
+                f"User {self.username} authentification failed. Check the credentials."
+            )
+
         self.cookies = self.last_request.cookies.get_dict()
 
     def get_main(self):
+        """GET request of the OnBoard main page, after the login step."""
         self.last_request = self.session.get(url=Onboard.URL_MENU, cookies=self.cookies)
         self.update_view_state()
 
     def post_planning(self):
+        """POST request that simulates the first click on the Planning menu on the side panel."""
         data_post = {
             "javax.faces.partial.ajax": "true",
             "javax.faces.source": "form:j_idt52",
@@ -124,6 +171,8 @@ class Onboard:
         )
 
     def post_my_planning(self):
+        """POST request to simulates the second click on the My schedule section,
+        after the side panel moved to show the submenus."""
         menu_id = self.get_planning_menu_id()
         data_post = {
             "form": "form",
@@ -140,12 +189,25 @@ class Onboard:
         )
 
     def get_my_planning(self):
+        """GET request to load the Planning page.
+
+        Raises:
+            OnBoardMenuError: If the response page does not match usual response
+            (might not be the Planning page)
+        """
         self.last_request = self.session.get(
             url=Onboard.URL_PLANNING, cookies=self.cookies
         )
+
+        if self.planning_is_loaded():
+            print("Planning page loaded.")
+        else:
+            print("The planning page has no 'planning card' class.")
+            raise OnBoardMenuError("Planning page loading failed")
         self.update_view_state()
 
     def post_planning_month(self):
+        """POST request to load the planning of the current month"""
         data_post = {
             "javax.faces.partial.ajax": "true",
             "javax.faces.source": "form:j_idt117",
@@ -171,6 +233,7 @@ class Onboard:
         )
 
     def post_planning_year(self):
+        """POST request to load the planning from today to 250 days later. (See class attributes)"""
         data_post = {
             "javax.faces.partial.ajax": "true",
             "javax.faces.source": "form:j_idt117",
@@ -196,6 +259,11 @@ class Onboard:
         )
 
     def post_download(self):
+        """POST request to download the ICS file of the currently loaded calendar
+
+        Raises:
+            OnBoardError: If the data response is not an ICS file
+        """
         data_post = {
             "form": "form",
             "form:largeurDivCenter": "923",
@@ -214,6 +282,18 @@ class Onboard:
             url=Onboard.URL_PLANNING, data=data_post, cookies=self.cookies
         )
 
+        if self.is_ics():
+            print(
+                "Download successful. The response's data is the ICS calendar as expected."
+            )
+        else:
+            print(
+                "The response is not an ICS file. It doesn't have the correct beginning or end."
+            )
+            raise OnBoardError(
+                "ICS download failed. See the response to understand what happened"
+            )
+
 
 if __name__ == "__main__":
     import time
@@ -231,4 +311,5 @@ if __name__ == "__main__":
     essai.get_my_planning()
     essai.post_planning_year()
     essai.post_download()
-    print(time.time() - start)
+    print("Time elapsed: ", time.time() - start, "\n")
+    print(essai.last_request.text)
