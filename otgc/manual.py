@@ -2,7 +2,7 @@ import re
 from datetime import date, datetime, timedelta
 from requests import Session
 
-from exceptions import OnBoardError, OnBoardAuthentification, OnBoardMenuError
+from otgc.exceptions import OnBoardError, OnBoardAuthentification, OnBoardMenuError
 
 
 class Onboard:
@@ -284,7 +284,7 @@ class Onboard:
 
         if self.is_ics():
             print(
-                "Download successful. The response's data is the ICS calendar as expected."
+                "Download successful. The response's data is an ICS calendar as expected."
             )
         else:
             print(

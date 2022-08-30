@@ -22,7 +22,7 @@ provider "google" {
 module "my_function" {
   source               = "./function"
   project              = var.project
-  function_name        = "otgc-public_http"
+  function_name        = "otgc-public-http"
   function_entry_point = "helloWorld"
   # function_url         = "otgc-${var.project}-${locals.timestamp}"
 }
