@@ -11,9 +11,11 @@ data "archive_file" "source" {
 }
 
 # Create bucket that will host the source code
+# Free Tier: 5 GB-months of regional storage (US regions only)
 resource "google_storage_bucket" "bucket" {
-  name       = "${var.project}-function"
-  location   = "EU"
+  name          = "${var.project}-function"
+  location      = "US-WEST1"
+  storage_class = "REGIONAL"
 }
 
 # Add source code zip to bucket
@@ -25,6 +27,8 @@ resource "google_storage_bucket_object" "zip" {
 }
 
 # Enable Cloud Functions API
+# Free Tier: 2 million invocations per month 
+# (includes both background and HTTP invocations)
 resource "google_project_service" "cf" {
   project = var.project
   service = "cloudfunctions.googleapis.com"
@@ -34,6 +38,7 @@ resource "google_project_service" "cf" {
 }
 
 # Enable Cloud Build API
+# Free Tier: 120 build-minutes per day 
 resource "google_project_service" "cb" {
   project = var.project
   service = "cloudbuild.googleapis.com"

@@ -53,7 +53,7 @@ You will need to get your API credentials and refer to them in the `config.ini` 
 10. Click the "Exchange authorization code for tokens" button
 11. Your refresh token is displayed. Copy ans paste the refresh token and the Client ID in your `config.ini` file.
 
-**NB:** By default, the `Publishing status` of your app is `Testing`, which causes refresh tokens to expire after 7 days, so you will need to manually refresh them on [Google OAuth 2.0 Playground](https://developers.google.com/oauthplayground/) and repeat the steps 5 to 11. To change that, follow the `Publish app` procedure as described on the `OAuth consent screen` page.
+**NB:** By default, the `Publishing status` of your app is `Testing`, which causes refresh tokens to expire after 7 days, so you will need to manually refresh them on [Google OAuth 2.0 Playground](https://developers.google.com/oauthplayground/) and repeat the steps 5 to 11. To change that, remove all scopes from your consent screen and follow the `Publish app` procedure as described on the `OAuth consent screen` page. Its state should now be `Production`. Have fun.
 
 ### Configure your Google Calendar
 
