@@ -24,5 +24,13 @@ module "my_function" {
   project              = var.project
   function_name        = "otgc-public-http"
   function_entry_point = "helloWorld"
-  # function_url         = "otgc-${var.project}-${locals.timestamp}"
 }
+
+# # Uncomment if you want to config the cloud scheduler using credentials in clear text
+# # /!\ Your credentials will be saved in Cloud Scheduler, in the IaC and in the Terraform state
+# module "my_scheduler" {
+#   source = "./scheduler"
+#   username = "xxx"
+#   password = "xxx"
+#   endpoint = module.my_function.function_url
+# }

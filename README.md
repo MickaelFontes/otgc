@@ -12,6 +12,15 @@ In this project, we suppose that an entire calendar of your Google Calendar is d
 
 # Installation
 
+1. Set up your Google project
+2. [Configure OAuth and Google Calendar](#google-calendar-configuration)
+3. Use OTGC
+   1. Locally with manual script
+   2. [Remotly with a GCP Cloud Function](terraform/README.md)
+      1. With Cloud Scheduler (credentials in clear for now)
+      2. With manual trigger (no OnBoard credentials stored in clear)
+   3. Else: as you want ;)
+
 You can use OTGC locally on your machine or deploy a Google Cloud Function to perform the calendar update.
 In both cases, you will need to get a token to acces the Google Calendar API.
 
@@ -64,17 +73,6 @@ To tell OTGC which calendar you want to update, specify your calendar ID in the 
 You can find your calendar ID on the Google Calendar webapp.
 Go to the calendar settings, then on the left side select your calendar.
 Scroll down a little bit and you will find your calendar ID. Its name ends with `@group.calendar.google.com`.
-
-## Selenium (Legacy - Optional)
-
-If you need to use the other approach based on selenium, first install the Selenium Python module:
-
-```python
-pip install selenium    
-```
-
-Then, update the `config['SELENIUM']['GECKO_PATH']` variable to point to your gecko driver (or your other WebDriver if you choose another one).  
-Now, everything should be fine. If you have any issue, please read the documentation [here](https://selenium-python.readthedocs.io/installation.html).
 
 # Usage
 
