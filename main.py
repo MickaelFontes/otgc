@@ -21,7 +21,7 @@ def main(
     calendar_id = config["GOOGLE_CALENDAR"]["CALENDAR_ID"]
     token_path = config["GOOGLE_CALENDAR"]["TOKEN_PATH"]
     if credentials_file:
-        credentials_path = config["GOOGLE_CALENDAR"]["JSON_CREDENTIALS_PATH"]
+        credentials_path = config["ONBOARD"]["CREDENTIALS_PATH"]
 
     token = Credentials(
         token=None,
@@ -45,7 +45,7 @@ def main(
 
         # Step 2: Get the planning.ics files from OnBoard
         onboard_planning = GetOnboard(
-            credentials=config["ONBOARD"]["CREDENTIALS_PATH"],
+            credentials=credentials_path,
             export_dir=os.path.abspath(directory),
             nb_months=nb_months,
             gecko_path=config["SELENIUM"]["GECKO_PATH"],
@@ -122,5 +122,5 @@ def helloWorld(request):
 
 if __name__ == "__main__":
     start_main = time()
-    main(manual=True)
+    main(manual=True, credentials_file=True)
     print(time() - start_main)

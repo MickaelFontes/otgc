@@ -53,7 +53,7 @@ You will need to get your API credentials and refer to them in the `config.ini` 
 1. [Create a new Google Cloud Platform (GCP) project](https://developers.google.com/workspace/guides/create-project)
 2. Enable the "Google Calendar API" for your project
 3. [Configure the OAuth consent screen](https://developers.google.com/workspace/guides/create-credentials#configure_the_oauth_consent_screen)
-4. [Create a OAuth client ID credential](https://developers.google.com/workspace/guides/create-credentials#create_a_oauth_client_id_credential) (select the `Web application` setting and add the following URL in the `Authorized redirect URIs` list: [https://developers.google.com/oauthplayground/](https://developers.google.com/oauthplayground/))
+4. [Create a OAuth client ID credential](https://developers.google.com/workspace/guides/create-credentials#create_a_oauth_client_id_credential) (select the `Web application` setting and add the following URL in the `Authorized redirect URIs` list: [https://developers.google.com/oauthplayground/](https://developers.google.com/oauthplayground))
 5. Go to the [Google OAuth 2.0 Playground](https://developers.google.com/oauthplayground/)
 6. Click the gear icon in the upper-right. Check the `Use your own OAuth credentials` box and input your Client ID and Client Secret
 7. On the left side of the screen, under the `Google Calendar API`, select the `https://www.googleapis.com/auth/calendar` OAuth scope and then click `Authorize APIs`.
