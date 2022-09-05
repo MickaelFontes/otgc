@@ -47,6 +47,16 @@ resource "google_project_service" "cb" {
   disable_on_destroy         = false
 }
 
+# Enable Cloud Scheduler API
+# Free Tier: 3 jobs 
+resource "google_project_service" "cs" {
+  project = var.project
+  service = "cloudscheduler.googleapis.com"
+
+  disable_dependent_services = true
+  disable_on_destroy         = false
+}
+
 # Create Cloud Function
 resource "google_cloudfunctions_function" "function" {
   name    = var.function_name
