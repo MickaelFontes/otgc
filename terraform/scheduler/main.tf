@@ -1,7 +1,7 @@
 resource "google_cloud_scheduler_job" "job" {
-  name             = "OTGC update"
+  name             = "otgc_update"
   description      = "OTGC scheduled task"
-  schedule         = "0 */1 * * *"
+  schedule         = var.schedule
   time_zone        = "Europe/Paris"
   attempt_deadline = "320s"
 
@@ -12,6 +12,9 @@ resource "google_cloud_scheduler_job" "job" {
   http_target {
     http_method = "POST"
     uri         = var.endpoint
+    headers     =  {
+      Content-Type = "application/json"
+    }
     body        = base64encode("{\"username\":\"${var.username}\", \"password\":\"${var.password}\"}")
   }
 }
