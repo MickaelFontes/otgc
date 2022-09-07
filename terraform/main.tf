@@ -9,7 +9,7 @@ terraform {
 	}
   }
   backend "gcs" {
-   bucket  = "edt-onboard-tfstate"
+   bucket  = "MANUAL_EDIT_WRITE_YOUR_BUCKET"
    prefix  = "terraform/state"
   }
 }
@@ -26,11 +26,12 @@ module "my_function" {
   function_entry_point = "helloWorld"
 }
 
-# # Uncomment if you want to config the cloud scheduler using credentials in clear text
-# # /!\ Your credentials will be saved in Cloud Scheduler, in the IaC and in the Terraform state
-# module "my_scheduler" {
-#   source = "./scheduler"
-#   username = "xxx"
-#   password = "xxx"
-#   endpoint = module.my_function.function_url
-# }
+# Comment if you want to config the cloud scheduler using credentials in clear text
+# /!\ Your credentials will be saved in Cloud Scheduler, in the IaC and in the Terraform state
+module "my_scheduler" {
+  source = "./scheduler"
+  username = var.username
+  password = var.password
+  endpoint = module.my_function.function_url
+  schedule = var.schedule
+}

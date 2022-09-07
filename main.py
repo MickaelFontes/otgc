@@ -37,41 +37,25 @@ def main(
         for file in os.listdir(directory):
             os.remove(os.path.join(directory, file))
 
-    if not manual:
-        from otgc.selenium import GetOnboard
+    # Manual process GET/POST
+    if credentials_file:  # OnBoard credentials are stored as clear text in a file
+        with open(credentials_path, "r", encoding="UTF-8") as file:
+            lines = file.readlines()
+            username = lines[0].rstrip()
+            password = lines[1].rstrip()
+    essai_get_post = Onboard(username, password)
+    essai_get_post.post_login()
+    essai_get_post.get_main()
+    essai_get_post.post_planning()
+    essai_get_post.post_my_planning()
+    essai_get_post.get_my_planning()
+    essai_get_post.post_planning_year()
+    essai_get_post.post_download()
 
-        nb_months = 2
-        # Step 1: Clean Downloads directory and create it if needed
-
-        # Step 2: Get the planning.ics files from OnBoard
-        onboard_planning = GetOnboard(
-            credentials=credentials_path,
-            export_dir=os.path.abspath(directory),
-            nb_months=nb_months,
-            gecko_path=config["SELENIUM"]["GECKO_PATH"],
-        )
-        onboard_planning.get_ics()
-
-    else:
-        # Manual process GET/POST
-        if credentials_file:  # OnBoard credentials are stored as clear text in a file
-            with open(credentials_path, "r", encoding="UTF-8") as file:
-                lines = file.readlines()
-                username = lines[0].rstrip()
-                password = lines[1].rstrip()
-        essai_get_post = Onboard(username, password)
-        essai_get_post.post_login()
-        essai_get_post.get_main()
-        essai_get_post.post_planning()
-        essai_get_post.post_my_planning()
-        essai_get_post.get_my_planning()
-        essai_get_post.post_planning_year()
-        essai_get_post.post_download()
-
-        if export:
-            with open(directory + "/planning.ics", "w", encoding="UTF-8") as file:
-                file.write(essai_get_post.last_request.text)
-            print("ICS Calendar exported.")
+    if export:
+        with open(directory + "/planning.ics", "w", encoding="UTF-8") as file:
+            file.write(essai_get_post.last_request.text)
+        print("ICS Calendar exported.")
 
     # Step 3: Read all ICS files, get all unique events
     all_events = []
