@@ -19,7 +19,7 @@ To easily deploy the GCP resources we need to use OTGC, we will use Terraform.
 4. Copy this command in the shell input and press ENTER.
 
 ```bash
-git clone https://github.com/MickaelFontes/otgc.git && cd otgc/terraform
+git clone https://github.com/MickaelFontes/otgc.git && cd otgc/terraform && chmod +x install.sh
 ```
 
 5. Then, run the `install.sh` script, by providing it the tokens and IDs pasted in your open notepad window.
