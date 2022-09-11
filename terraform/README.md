@@ -1,15 +1,33 @@
 # Deploy with Terraform
 
+> To complete the deployment, you will need:
+>
+> * your project's ID
+> * your OAuth Client ID
+> * your OAuth Client Secret
+> * your OAuth Refresh Token
+> * your new calendar's ID
+
 To easily deploy the GCP resources we need to use OTGC, we will use Terraform.
 
-You'll first need to:
+1. Open [Google Cloud Console](https://console.cloud.google.com/)
+![](2022-09-11-14-51-52.png)
+2. Click on the project icon and select the Google project you use previously for OTGC
+![](2022-09-11-14-52-30.png)
+3. Open a [Cloud Shell](https://console.cloud.google.com/home/dashboard?cloudshell=true) inside your project by clicking on the shell icon.
+![](2022-09-11-14-53-32.png)
+4. Copy this command in the shell input and press ENTER.
 
-1. To make things easy, open a [Cloud Shell](https://console.cloud.google.com/home/dashboard?cloudshell=true) inside your project
-2. Clone this GitHub repo inside your Cloud Shell VM.
-3. Create a bucket storage to store your Terraform state remotely. Copy its name.
-4. Activate the Cloud Function API
-5. At the root of the `terraform` folder, under the `backend "gcs"` section, replace `MANUAL_EDIT_WRITE_YOUR_BUCKET` with the name of the bucket you just created.
-6. Copy `terraform.tfvars.example`, rename it `terraform.tfvars` and fill it with your values (`username` and `password` to authentificate on OnBoard).
-7. Copy `config_example.ini`, rename it `config.ini` and fill the fields `REFRESH_TOKEN`, `CLIENT_ID` and `CLIENT_SECRET` with your values.
-8. Ensure a few  minutes have elapsed since you activated the Cloud Function API and then deploy using `terrafom init` and `terraform apply`
-9. ANJOY
+```bash
+git clone https://github.com/MickaelFontes/otgc.git && cd otgc/terraform
+```
+
+5. Then, run the `install.sh` script, by providing it the tokens and IDs pasted in your open notepad window.
+To do so, copy the following command and replace the uppercase words with the values in your notepad.
+> /!\ The order **matters** !
+
+```bash
+./install.sh PROJECT_ID CLIENT_ID CLIENT_SECRET REFRESH_TOKEN CALENDAR_ID ONBAORD_USERNAME ONBOARD_PASSWORD
+```
+Enter 'yes' when asked by Terraform.
+ANJOY

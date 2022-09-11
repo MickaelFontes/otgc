@@ -13,7 +13,7 @@ In this project, we suppose that an entire calendar of your Google Calendar is d
 # Installation
 
 1. [Create a new Google Cloud Platform (GCP) project](https://developers.google.com/workspace/guides/create-project)
-2. [Configure OAuth and Google Calendar](#google-calendar-configuration)
+2. [Configure OAuth and Google Calendar](GoogleCalendarAPI.md)
 3. Use OTGC (choose one of the following options)
    1. Locally with manual script
    2. [Remotly with a GCP Cloud Function](terraform/README.md)
@@ -28,7 +28,7 @@ You can use OTGC locally on your machine or use Free Tier GCP ressources to auto
 During the process, you will need to note down some elements:
 
 * your GCP project ID (it may differ from the name you gave to it)
-* your token's fields (id, secret and associated refresh token)
+* your token's fields (id, secret and refresh token)
 * your Google calendar's ID
 
 ## Local installation
@@ -52,9 +52,14 @@ The first line of the file must be the username and the second line the password
 
 ### Google Calendar Authentification
 
-To connect to Google Calendar, I used [Google Calendar Simple API](https://github.com/kuzmoyev/google-calendar-simple-api), a Python package to simply use the Google Calendar API in Python.
+>In this step, you will get:
+>
+>* your GCP project ID (it may differ from the name you gave to it)
+>* your token's fields (id, secret and refresh token)
+>
+>Note them down, you will need them later.
 
-You will need to get your API credentials and refer to them in the `config.ini` file. To do so:
+To get them, follow these steps:
 
 1. Enable the "Google Calendar API" for your project
 2. [Configure the OAuth consent screen](https://developers.google.com/workspace/guides/create-credentials#configure_the_oauth_consent_screen) and ensure that, at the scopes' step, you have no scope selected at all.

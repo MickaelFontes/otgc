@@ -1,6 +1,3 @@
-locals {
-  timestamp = formatdate("YYYY-MM-DD-hh-mm-ss", timestamp())
-}
 terraform {
   required_providers {
 	google = {
@@ -22,7 +19,7 @@ provider "google" {
 module "my_function" {
   source               = "./function"
   project              = var.project
-  function_name        = "otgc-public-http"
+  function_name        = var.function_name
   function_entry_point = "helloWorld"
 }
 
