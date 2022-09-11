@@ -21,7 +21,7 @@ def main(
     calendar_id = config["GOOGLE_CALENDAR"]["CALENDAR_ID"]
     token_path = config["GOOGLE_CALENDAR"]["TOKEN_PATH"]
     if credentials_file:
-        credentials_path = config["GOOGLE_CALENDAR"]["JSON_CREDENTIALS_PATH"]
+        credentials_path = config["ONBOARD"]["CREDENTIALS_PATH"]
 
     token = Credentials(
         token=None,
@@ -37,41 +37,25 @@ def main(
         for file in os.listdir(directory):
             os.remove(os.path.join(directory, file))
 
-    if not manual:
-        from otgc.selenium import GetOnboard
+    # Manual process GET/POST
+    if credentials_file:  # OnBoard credentials are stored as clear text in a file
+        with open(credentials_path, "r", encoding="UTF-8") as file:
+            lines = file.readlines()
+            username = lines[0].rstrip()
+            password = lines[1].rstrip()
+    essai_get_post = Onboard(username, password)
+    essai_get_post.post_login()
+    essai_get_post.get_main()
+    essai_get_post.post_planning()
+    essai_get_post.post_my_planning()
+    essai_get_post.get_my_planning()
+    essai_get_post.post_planning_year()
+    essai_get_post.post_download()
 
-        nb_months = 2
-        # Step 1: Clean Downloads directory and create it if needed
-
-        # Step 2: Get the planning.ics files from OnBoard
-        onboard_planning = GetOnboard(
-            credentials=config["ONBOARD"]["CREDENTIALS_PATH"],
-            export_dir=os.path.abspath(directory),
-            nb_months=nb_months,
-            gecko_path=config["SELENIUM"]["GECKO_PATH"],
-        )
-        onboard_planning.get_ics()
-
-    else:
-        # Manual process GET/POST
-        if credentials_file:  # OnBoard credentials are stored as clear text in a file
-            with open(credentials_path, "r", encoding="UTF-8") as file:
-                lines = file.readlines()
-                username = lines[0].rstrip()
-                password = lines[1].rstrip()
-        essai_get_post = Onboard(username, password)
-        essai_get_post.post_login()
-        essai_get_post.get_main()
-        essai_get_post.post_planning()
-        essai_get_post.post_my_planning()
-        essai_get_post.get_my_planning()
-        essai_get_post.post_planning_year()
-        essai_get_post.post_download()
-
-        if export:
-            with open(directory + "/planning.ics", "w", encoding="UTF-8") as file:
-                file.write(essai_get_post.last_request.text)
-            print("ICS Calendar exported.")
+    if export:
+        with open(directory + "/planning.ics", "w", encoding="UTF-8") as file:
+            file.write(essai_get_post.last_request.text)
+        print("ICS Calendar exported.")
 
     # Step 3: Read all ICS files, get all unique events
     all_events = []
@@ -122,5 +106,5 @@ def helloWorld(request):
 
 if __name__ == "__main__":
     start_main = time()
-    main(manual=True)
+    main(manual=True, credentials_file=True)
     print(time() - start_main)

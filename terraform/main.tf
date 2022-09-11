@@ -1,6 +1,3 @@
-locals {
-  timestamp = formatdate("YYYY-MM-DD-hh-mm-ss", timestamp())
-}
 terraform {
   required_providers {
 	google = {
@@ -9,7 +6,7 @@ terraform {
 	}
   }
   backend "gcs" {
-   bucket  = "edt-onboard-tfstate"
+   bucket  = "MANUAL_EDIT_WRITE_YOUR_BUCKET"
    prefix  = "terraform/state"
   }
 }
@@ -22,7 +19,16 @@ provider "google" {
 module "my_function" {
   source               = "./function"
   project              = var.project
-  function_name        = "otgc-public-http"
+  function_name        = var.function_name
   function_entry_point = "helloWorld"
-  # function_url         = "otgc-${var.project}-${locals.timestamp}"
+}
+
+# Comment if you want to config the cloud scheduler using credentials in clear text
+# /!\ Your credentials will be saved in Cloud Scheduler, in the IaC and in the Terraform state
+module "my_scheduler" {
+  source = "./scheduler"
+  username = var.username
+  password = var.password
+  endpoint = module.my_function.function_url
+  schedule = var.schedule
 }

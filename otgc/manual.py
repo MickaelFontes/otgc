@@ -36,6 +36,7 @@ class Onboard:
         self.view_state = ""
         self.cookies = ""
         self.last_request = None
+        self.id_download_function = None
 
     def update_view_state(self):
         """Extract the unique ViewState of the last request.
@@ -105,6 +106,26 @@ class Onboard:
             r"BEGIN:VCALENDAR[\s\S]+END:VCALENDAR", self.last_request.text
         )
         return ics_beginning_end
+
+    def get_download_function_id(self):
+        """Regex to find the id of the Javascript download function.
+
+        Returns:
+            string: True if found, else False.
+        """
+
+        id_found = re.search(
+            r'<a id=\"([a-z0-9_:]+)"[\s\S]+(Télécharger|Download)\"',
+            self.last_request.text,
+        )
+
+        if id_found.group(1) != "":
+            id_function = id_found.group(1)
+            print("Download function id found.")
+            self.id_download_function = id_function
+        else:
+            print("Download function id NOT found.")
+            raise OnBoardError("Regex for download id function failed.")
 
     def post_login(self):
         """POST request to authentificate
@@ -205,6 +226,7 @@ class Onboard:
             print("The planning page has no 'planning card' class.")
             raise OnBoardMenuError("Planning page loading failed")
         self.update_view_state()
+        self.get_download_function_id()
 
     def post_planning_month(self):
         """POST request to load the planning of the current month"""
@@ -276,7 +298,7 @@ class Onboard:
             "form:j_idt236_focus": "",
             "form:j_idt236_input": "44323",
             "javax.faces.ViewState": self.view_state,
-            "form:j_idt120": "form:j_idt120",
+            self.id_download_function: self.id_download_function,
         }
         self.last_request = self.session.post(
             url=Onboard.URL_PLANNING, data=data_post, cookies=self.cookies
