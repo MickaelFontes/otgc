@@ -30,7 +30,7 @@ fi
 # Create and update the Terraform main.tf with your state bucket name
 gsutil mb gs://tf_state_otgc_${random_chars}
 gcloud services enable cloudfunctions.googleapis.com
-sleep 30
+sleep 30 # To avoid Terraform error, not finding the newly created state bucket
 sed -i "s/\(MANUAL_EDIT_WRITE_YOUR_BUCKET\)/tf_state_otgc_${random_chars}/m" ./main.tf
 
 # Create terraform.tfvars.example
