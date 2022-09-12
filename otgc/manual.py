@@ -37,6 +37,7 @@ class Onboard:
         self.cookies = ""
         self.last_request = None
         self.id_download_function = None
+        self.id_schedule_function = None
 
     def update_view_state(self):
         """Extract the unique ViewState of the last request.
@@ -111,7 +112,7 @@ class Onboard:
         """Regex to find the id of the Javascript download function.
 
         Returns:
-            string: True if found, else False.
+            string: ID if found, else exception raised.
         """
 
         id_found = re.search(
@@ -126,6 +127,26 @@ class Onboard:
         else:
             print("Download function id NOT found.")
             raise OnBoardError("Regex for download id function failed.")
+
+    def get_schedule_function_id(self):
+        """Regex to find the id of the Javascript schedule function.
+
+        Returns:
+            string: ID if found, else exception raised.
+        """
+
+        id_found = re.search(
+            r'id="([:a-z0-9_]+)" class="schedule"',
+            self.last_request.text,
+        )
+
+        if id_found.group(1) != "":
+            id_function = id_found.group(1)
+            print("Schedule function id found.")
+            self.id_schedule_function = id_function
+        else:
+            print("Schedule function id NOT found.")
+            raise OnBoardError("Regex for schedule id function failed.")
 
     def post_login(self):
         """POST request to authentificate
@@ -227,22 +248,23 @@ class Onboard:
             raise OnBoardMenuError("Planning page loading failed")
         self.update_view_state()
         self.get_download_function_id()
+        self.get_schedule_function_id()
 
     def post_planning_month(self):
         """POST request to load the planning of the current month"""
         data_post = {
             "javax.faces.partial.ajax": "true",
-            "javax.faces.source": "form:j_idt117",
-            "javax.faces.partial.execute": "form:j_idt117",
-            "javax.faces.partial.render": "form:j_idt117",
-            "form:j_idt117": "form:j_idt117",
-            "form:j_idt117_start": Onboard.BEGINNING,
-            "form:j_idt117_end": Onboard.END_MONTH,
+            "javax.faces.source": self.id_schedule_function,
+            "javax.faces.partial.execute": self.id_schedule_function,
+            "javax.faces.partial.render": self.id_schedule_function,
+            self.id_schedule_function: self.id_schedule_function,
+            f"{self.id_schedule_function}_start": Onboard.BEGINNING,
+            f"{self.id_schedule_function}_end": Onboard.END_MONTH,
             "form": "form",
             "form:largeurDivCenter": "923",
             "form:date_input": Onboard.DATE,
             "form:week": Onboard.WEEK + "-" + Onboard.YEAR,
-            "form:j_idt117_view": "agendaWeek",
+            f"{self.id_schedule_function}_view": "agendaWeek",
             "form:offsetFuseauNavigateur": "-3600000",
             "form:onglets_activeIndex": "0",
             "form:onglets_scrollState": "0",
@@ -258,17 +280,17 @@ class Onboard:
         """POST request to load the planning from today to 250 days later. (See class attributes)"""
         data_post = {
             "javax.faces.partial.ajax": "true",
-            "javax.faces.source": "form:j_idt117",
-            "javax.faces.partial.execute": "form:j_idt117",
-            "javax.faces.partial.render": "form:j_idt117",
-            "form:j_idt117": "form:j_idt117",
-            "form:j_idt117_start": Onboard.BEGINNING,
-            "form:j_idt117_end": Onboard.END,
+            "javax.faces.source": self.id_schedule_function,
+            "javax.faces.partial.execute": self.id_schedule_function,
+            "javax.faces.partial.render": self.id_schedule_function,
+            self.id_schedule_function: self.id_schedule_function,
+            f"{self.id_schedule_function}_start": Onboard.BEGINNING,
+            f"{self.id_schedule_function}_end": Onboard.END,
             "form": "form",
             "form:largeurDivCenter": "923",
             "form:date_input": Onboard.DATE,
             "form:week": Onboard.WEEK + "-" + Onboard.YEAR,
-            "form:j_idt117_view": "agendaWeek",
+            f"{self.id_schedule_function}_view": "agendaWeek",
             "form:offsetFuseauNavigateur": "-3600000",
             "form:onglets_activeIndex": "0",
             "form:onglets_scrollState": "0",
@@ -291,7 +313,7 @@ class Onboard:
             "form:largeurDivCenter": "923",
             "form:date_input": Onboard.DATE,
             "form:week": Onboard.WEEK + "-" + Onboard.YEAR,
-            "form:j_idt117_view": "month",
+            "{self.id_schedule_function}_view": "month",
             "form:offsetFuseauNavigateur": "-3600000",
             "form:onglets_activeIndex": "0",
             "form:onglets_scrollState": "0",
