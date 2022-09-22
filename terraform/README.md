@@ -24,11 +24,12 @@ git clone https://github.com/MickaelFontes/otgc.git && cd otgc/terraform && chmo
 
 5. Then, run the `install.sh` script, by providing it the tokens and IDs pasted in your open notepad window.
 To do so, copy the following command and replace the uppercase words with the values in your notepad.
+Note that the `ONBOARD_PASSWORD` argument is in single quotes to escape parameter expansion (be careful if your password contains a `$` sign).
 
 > /!\ The order **matters** !
 
 ```bash
-./install.sh PROJECT_ID CLIENT_ID CLIENT_SECRET REFRESH_TOKEN CALENDAR_ID ONBAORD_USERNAME ONBOARD_PASSWORD
+./install.sh PROJECT_ID CLIENT_ID CLIENT_SECRET REFRESH_TOKEN CALENDAR_ID ONBOARD_USERNAME 'ONBOARD_PASSWORD'
 ```
 
 Enter 'yes' when asked by Terraform.

@@ -60,7 +60,7 @@ class Onboard:
         # Matches the first element (see '_0'), it should be the My Schedule
         # May change with major updates with the menus
         regex_menu_id = re.search(
-            r"form:sidebar_menuid':'([0-9_]{3})'.+(Mon\splanning|My\sschedule)",
+            r"form:sidebar_menuid':'([0-9_]{3,})'.+(Mon\splanning|My\sschedule)",
             self.last_request.text,
         )
         if regex_menu_id:
@@ -70,7 +70,7 @@ class Onboard:
         return menu_id
 
     def is_auth(self):
-        """Check the response to verify if the user is suathentificated
+        """Check the response to verify if the user is authentificated
 
         Returns:
             boolean: True if authentificated, else False
@@ -81,6 +81,10 @@ class Onboard:
         if get_title:
             title = get_title.group(1)
             if title.lower() in ["page d'accueil", "home page"]:
+                if title.lower() == "page d'accueil":
+                    print("Website: French version")
+                else:
+                    print("Website: English version")
                 return True
         return False
 
