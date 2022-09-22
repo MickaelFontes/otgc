@@ -40,8 +40,7 @@ cp terraform.tfvars.example terraform.tfvars
 
 sed -i "s/your_project/$1/m" ./terraform.tfvars
 sed -i "s/your_onboard_username/$6/m" ./terraform.tfvars
-sed -i "/your_onboard_password/d" ./terraform.tfvars
-echo "password = \"$7\"" # to avoid potential problems with special separator character /
+printf "\npassword = \"$7\"" >> ./terraform.tfvars # to avoid potential problems with special separator character
 sed -i "s/your_function/otgc_function_${random_chars}/m" ./terraform.tfvars
 sed -i "s/your_cron_expression/${random_int} \*\/1 \* \* \*\\ /m" ./terraform.tfvars
 
@@ -59,4 +58,4 @@ sed -i "s@your_refresh_token@$replacement_refresh_token@" ./config.ini
 cd terraform
 
 # Apply the Terraform config
-terraform init && terraform apply
+terraform init -reconfigure && terraform apply
