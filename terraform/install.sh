@@ -40,9 +40,10 @@ cp terraform.tfvars.example terraform.tfvars
 
 sed -i "s/your_project/$1/m" ./terraform.tfvars
 sed -i "s/your_onboard_username/$6/m" ./terraform.tfvars
-sed -i "s/your_onboard_password/$7/m" ./terraform.tfvars
-sed -i "s/\(your_function/otgc_function_${random_chars}/m" ./terraform.tfvars
-sed -i "s/\(your_cron_expression/${random_int} \*\/1 \* \* \*\\ /m" ./terraform.tfvars
+sed -i "/your_onboard_password/d" ./terraform.tfvars
+printf "\npassword = \"$7\"" >> ./terraform.tfvars # to avoid potential problems with special separator character
+sed -i "s/your_function/otgc_function_${random_chars}/m" ./terraform.tfvars
+sed -i "s/your_cron_expression/${random_int} \*\/1 \* \* \*\\ /m" ./terraform.tfvars
 
 # Update values in config.ini
 cd ../
@@ -53,9 +54,9 @@ cp config_example.ini config.ini
 sed -i "s/yourcalendar@group.calendar.google.com/$5/m" ./config.ini
 sed -i "s/your_client_id/$2/m" ./config.ini
 sed -i "s/your_client_secret/$3/m" ./config.ini
-sed -i --expression "s@your_refresh_token@$replacement_refresh_token@" ./config.ini
+sed -i "s@your_refresh_token@$replacement_refresh_token@" ./config.ini
 
 cd terraform
 
 # Apply the Terraform config
-terraform init && terraform apply
+terraform init -reconfigure && terraform apply

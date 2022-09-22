@@ -15,7 +15,7 @@ variable "password" {
   type = string
   description = "OnBoard password"
 }
-variable schedule {
+variable "schedule" {
   type = string
   description = "Cron expression used by the Cloud Scheduler"
   default = "0 */1 * * *"

@@ -1,4 +1,4 @@
-variable schedule {}
-variable endpoint {}
+variable "schedule" {}
+variable "endpoint" {}
 variable "username" {}
 variable "password" {}
