@@ -32,5 +32,13 @@ Note that the `ONBOARD_PASSWORD` argument is in single quotes to escape paramete
 ./install.sh PROJECT_ID CLIENT_ID CLIENT_SECRET REFRESH_TOKEN CALENDAR_ID ONBOARD_USERNAME 'ONBOARD_PASSWORD'
 ```
 
-Enter 'yes' when asked by Terraform.
+Enter `yes` when asked by Terraform.
 ANJOY
+
+# Uninstall OTGC
+
+To uninstall OTGC and remove all created resources, inside thge `terraform folder`, execute:
+
+```bash
+chmod +x uninstall.sh && ./uninstall.sh
+```

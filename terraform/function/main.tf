@@ -34,7 +34,7 @@ resource "google_project_service" "cf" {
   service = "cloudfunctions.googleapis.com"
 
   disable_dependent_services = true
-  disable_on_destroy         = false
+  disable_on_destroy         = true
 }
 
 # Enable Cloud Build API
@@ -44,7 +44,7 @@ resource "google_project_service" "cb" {
   service = "cloudbuild.googleapis.com"
 
   disable_dependent_services = true
-  disable_on_destroy         = false
+  disable_on_destroy         = true
 }
 
 # Enable Cloud Scheduler API
@@ -54,7 +54,7 @@ resource "google_project_service" "cs" {
   service = "cloudscheduler.googleapis.com"
 
   disable_dependent_services = true
-  disable_on_destroy         = false
+  disable_on_destroy         = true
 }
 
 # Create Cloud Function
