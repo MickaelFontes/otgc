@@ -13,7 +13,7 @@ sed -i -r 's/tf_state_otgc_[a-zA-Z0-9]+/MANUAL_EDIT_WRITE_YOUR_BUCKET/m' ./main.
 # Set up Google project
 project_file=$(cat terraform.tfvars)
 regex='project = \"([a-zA-Z0-9_-]+)\"'
-[[ "$string_file" =~ $regex ]]
+[[ "$project_file" =~ $regex ]]
 PROJECT_ID="${BASH_REMATCH[1]}"
 gcloud config set project $PROJECT_ID
 
@@ -23,3 +23,5 @@ gsutil rm -r gs://tf_state_otgc_${random_chars}
 # Remove config and values files
 rm terraform.tfvars
 cd ../ && rm config.ini
+rm .terraform.*
+rm -r .terraform
